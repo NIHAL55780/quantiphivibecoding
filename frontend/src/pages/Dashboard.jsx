@@ -1,4 +1,7 @@
+import { useState } from 'react';
+
 import MetricCard from '../components/MetricCard.jsx';
+import SubscriptionTable from '../components/SubscriptionTable.jsx';
 import { AlertIcon, CalendarIcon, WalletIcon } from '../components/icons.jsx';
 import { useSubscriptions } from '../hooks/useSubscriptions.js';
 import { formatCurrency } from '../utils/format.js';
@@ -6,9 +9,48 @@ import { formatCurrency } from '../utils/format.js';
 import './Dashboard.css';
 
 export default function Dashboard() {
-  const { subscriptions, metrics, isLoading, loadError, reload } = useSubscriptions();
+  const {
+    subscriptions,
+    metrics,
+    isLoading,
+    loadError,
+    pendingIds,
+    reload,
+    changeStatus,
+    removeSubscription,
+  } = useSubscriptions();
+
+  const [actionError, setActionError] = useState(null);
 
   const renewalCount = metrics?.upcomingRenewalsCount ?? 0;
+
+  async function handleChangeStatus(id, nextStatus) {
+    setActionError(null);
+
+    try {
+      await changeStatus(id, nextStatus);
+    } catch (error) {
+      setActionError(error.message);
+    }
+  }
+
+  async function handleDelete(subscription) {
+    const confirmed = window.confirm(
+      `Delete ${subscription.serviceName}? This cannot be undone.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await removeSubscription(subscription.id);
+    } catch (error) {
+      setActionError(error.message);
+    }
+  }
 
   return (
     <div className="dashboard">
@@ -29,6 +71,13 @@ export default function Dashboard() {
             <button type="button" className="button button--ghost" onClick={reload}>
               Retry
             </button>
+          </div>
+        )}
+
+        {actionError && (
+          <div className="alert alert--error" role="alert">
+            <AlertIcon />
+            <span className="dashboard__alert-text">{actionError}</span>
           </div>
         )}
 
@@ -59,9 +108,13 @@ export default function Dashboard() {
           />
         </section>
 
-        <section className="card" style={{ padding: 20 }}>
-          <p>{subscriptions.length} subscription(s) loaded.</p>
-        </section>
+        <SubscriptionTable
+          subscriptions={subscriptions}
+          isLoading={isLoading}
+          pendingIds={pendingIds}
+          onChangeStatus={handleChangeStatus}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   );

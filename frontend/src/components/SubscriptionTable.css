@@ -1,0 +1,226 @@
+.subscription-table__panel {
+  overflow: hidden;
+}
+
+.subscription-table__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.subscription-table__heading {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.subscription-table__count {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.subscription-table__scroll {
+  overflow-x: auto;
+}
+
+.subscription-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.subscription-table th {
+  padding: 11px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-muted);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.subscription-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.subscription-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.subscription-table tbody tr {
+  transition: background-color 0.15s ease, opacity 0.2s ease;
+}
+
+.subscription-table tbody tr:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.subscription-table__service {
+  font-weight: 600;
+}
+
+.subscription-table__numeric {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.subscription-table__monthly {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.subscription-table__date {
+  white-space: nowrap;
+}
+
+.subscription-table__date-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.subscription-table__placeholder {
+  color: var(--color-text-muted);
+}
+
+.subscription-table__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.subscription-table__delete {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.subscription-table__delete:hover:not(:disabled) {
+  color: var(--color-danger);
+  background-color: var(--color-danger-soft);
+}
+
+.subscription-table__delete:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Paused rows are visually recessed, but their controls stay fully legible so
+   the subscription can be resumed. */
+.subscription-table__row--paused {
+  background-color: #fafafb;
+}
+
+.subscription-table__row--paused td:not(.subscription-table__actions-cell) {
+  opacity: 0.55;
+}
+
+.subscription-table__row--pending {
+  opacity: 0.7;
+}
+
+/* ---------- Empty state ---------- */
+
+.subscription-table__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 56px 24px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.subscription-table__empty-icon {
+  color: var(--color-border-strong);
+}
+
+.subscription-table__empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.subscription-table__empty-text {
+  max-width: 320px;
+  font-size: 13.5px;
+}
+
+/* ---------- Loading skeleton ---------- */
+
+.subscription-table__skeleton-row td {
+  padding: 16px;
+}
+
+.subscription-table__skeleton-bar {
+  height: 13px;
+  width: 100%;
+}
+
+/* ---------- Responsive: table collapses into cards ---------- */
+
+@media (max-width: 880px) {
+  .subscription-table thead {
+    display: none;
+  }
+
+  .subscription-table,
+  .subscription-table tbody,
+  .subscription-table tr,
+  .subscription-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .subscription-table tbody tr {
+    padding: 6px 4px 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .subscription-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .subscription-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 7px 18px;
+    border-bottom: none;
+  }
+
+  .subscription-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .subscription-table__service {
+    font-size: 15px;
+  }
+
+  .subscription-table__date {
+    text-align: right;
+  }
+}
