@@ -1,0 +1,106 @@
+.subscription-form {
+  padding: 22px;
+}
+
+.subscription-form__header {
+  margin-bottom: 18px;
+}
+
+.subscription-form__title {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.subscription-form__subtitle {
+  margin-top: 3px;
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+}
+
+.subscription-form__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.field__required {
+  color: var(--color-danger);
+  margin-left: 2px;
+}
+
+.field__control {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  font-size: 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field__control:hover:not(:disabled) {
+  border-color: var(--color-text-muted);
+}
+
+.field__control:disabled {
+  background-color: var(--color-surface-muted);
+  cursor: not-allowed;
+}
+
+.field__control--invalid {
+  border-color: var(--color-danger);
+}
+
+.field__control--invalid:focus-visible {
+  outline-color: var(--color-danger);
+}
+
+.field__error {
+  font-size: 12.5px;
+  color: var(--color-danger);
+}
+
+.subscription-form__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.subscription-form__form-error {
+  margin-top: 18px;
+}
+
+@media (max-width: 860px) {
+  .subscription-form__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .subscription-form__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .subscription-form__footer {
+    justify-content: stretch;
+  }
+
+  .subscription-form__footer .button {
+    width: 100%;
+  }
+}

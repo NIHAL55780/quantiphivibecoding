@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import MetricCard from '../components/MetricCard.jsx';
+import SubscriptionForm from '../components/SubscriptionForm.jsx';
 import SubscriptionTable from '../components/SubscriptionTable.jsx';
 import { AlertIcon, CalendarIcon, WalletIcon } from '../components/icons.jsx';
 import { useSubscriptions } from '../hooks/useSubscriptions.js';
@@ -16,6 +17,7 @@ export default function Dashboard() {
     loadError,
     pendingIds,
     reload,
+    addSubscription,
     changeStatus,
     removeSubscription,
   } = useSubscriptions();
@@ -107,6 +109,8 @@ export default function Dashboard() {
             isLoading={isLoading}
           />
         </section>
+
+        <SubscriptionForm onAdd={addSubscription} />
 
         <SubscriptionTable
           subscriptions={subscriptions}
