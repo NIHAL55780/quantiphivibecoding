@@ -1,10 +1,13 @@
 import { ApiError } from './ApiError.js';
 import { isValidDateOnly } from './dates.js';
-import { BILLING_CYCLES, STATUSES, roundCurrency } from '../services/calculationService.js';
+import {
+  BILLING_CYCLES,
+  STATUSES,
+  SUPPORTED_CURRENCY,
+  roundCurrency,
+} from '../services/calculationService.js';
 
 const MAX_SERVICE_NAME_LENGTH = 100;
-const CURRENCY_CODE_PATTERN = /^[A-Z]{3}$/;
-const DEFAULT_CURRENCY = 'INR';
 
 function validateServiceName(value) {
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -40,12 +43,14 @@ function validateCost(value) {
 
 function validateCurrency(value) {
   if (value === undefined || value === null || value === '') {
-    return DEFAULT_CURRENCY;
+    return SUPPORTED_CURRENCY;
   }
 
   const currency = String(value).trim().toUpperCase();
-  if (!CURRENCY_CODE_PATTERN.test(currency)) {
-    throw ApiError.badRequest('Currency must be a 3-letter code such as INR or USD');
+  if (currency !== SUPPORTED_CURRENCY) {
+    throw ApiError.badRequest(
+      `Currency must be ${SUPPORTED_CURRENCY}. Mixed currencies are not supported.`,
+    );
   }
 
   return currency;

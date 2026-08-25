@@ -4,13 +4,14 @@ import { AlertIcon, PlusIcon } from './icons.jsx';
 
 import './SubscriptionForm.css';
 
-const CURRENCIES = ['INR', 'USD', 'EUR', 'GBP', 'AUD', 'CAD', 'SGD', 'JPY'];
 const BILLING_CYCLES = ['Monthly', 'Yearly'];
+
+// The app tracks a single currency, so this is fixed rather than user-selectable.
+const SUPPORTED_CURRENCY = 'INR';
 
 const EMPTY_FORM = {
   serviceName: '',
   cost: '',
-  currency: 'INR',
   billingCycle: 'Monthly',
   nextRenewalDate: '',
 };
@@ -104,7 +105,7 @@ export default function SubscriptionForm({ onAdd }) {
       await onAdd({
         serviceName: values.serviceName.trim(),
         cost: Number(values.cost),
-        currency: values.currency,
+        currency: SUPPORTED_CURRENCY,
         billingCycle: values.billingCycle,
         nextRenewalDate: values.nextRenewalDate,
       });
@@ -150,14 +151,19 @@ export default function SubscriptionForm({ onAdd }) {
             />
           </Field>
 
-          <Field id="currency" label="Currency" error={errors.currency}>
-            <select {...controlProps('currency')}>
-              {CURRENCIES.map((currency) => (
-                <option key={currency} value={currency}>
-                  {currency}
-                </option>
-              ))}
-            </select>
+          <Field id="currency" label="Currency">
+            <input
+              id="currency"
+              name="currency"
+              type="text"
+              className="field__control"
+              value={SUPPORTED_CURRENCY}
+              readOnly
+              aria-describedby="currency-hint"
+            />
+            <span className="field__hint" id="currency-hint">
+              All amounts are tracked in {SUPPORTED_CURRENCY}
+            </span>
           </Field>
 
           <Field id="billingCycle" label="Billing Cycle" error={errors.billingCycle}>

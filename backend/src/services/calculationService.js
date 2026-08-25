@@ -4,6 +4,13 @@ export const BILLING_CYCLES = ['Monthly', 'Yearly'];
 export const STATUSES = ['Active', 'Paused'];
 export const RENEWAL_WARNING_WINDOW_DAYS = 7;
 
+/**
+ * The application tracks a single currency. Summing costs across currencies
+ * without exchange rates would produce a meaningless total, so mixed currencies
+ * are rejected at validation rather than silently added together.
+ */
+export const SUPPORTED_CURRENCY = 'INR';
+
 const MONTHS_PER_YEAR = 12;
 
 export function roundCurrency(amount) {
@@ -53,24 +60,6 @@ export function enrichSubscriptions(subscriptions, today = getToday()) {
   return subscriptions.map((subscription) => enrichSubscription(subscription, today));
 }
 
-/**
- * Picks the currency to label aggregate totals with. The brief scopes the app to
- * a single currency, so the most common one among active subscriptions is used
- * rather than applying exchange rates.
- */
-function resolveDisplayCurrency(activeSubscriptions) {
-  if (activeSubscriptions.length === 0) {
-    return 'INR';
-  }
-
-  const counts = new Map();
-  for (const { currency } of activeSubscriptions) {
-    counts.set(currency, (counts.get(currency) ?? 0) + 1);
-  }
-
-  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
-}
-
 export function calculateMetrics(subscriptions, today = getToday()) {
   const active = subscriptions.filter((subscription) => subscription.status === 'Active');
 
@@ -87,7 +76,7 @@ export function calculateMetrics(subscriptions, today = getToday()) {
   return {
     totalMonthlyBurn: roundCurrency(totalMonthlyBurn),
     upcomingRenewalsCount,
-    currency: resolveDisplayCurrency(active),
+    currency: SUPPORTED_CURRENCY,
     activeCount: active.length,
     pausedCount: subscriptions.length - active.length,
     totalCount: subscriptions.length,

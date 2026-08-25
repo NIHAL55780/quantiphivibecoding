@@ -107,6 +107,27 @@ describe('POST /api/subscriptions', () => {
     assert.match(payload.message, /Billing cycle must be one of/);
   });
 
+  it('rejects a currency other than the supported one', async () => {
+    const { status, payload } = await api(
+      'POST',
+      '/api/subscriptions',
+      newSubscription({ currency: 'USD' }),
+    );
+
+    assert.equal(status, 400);
+    assert.match(payload.message, /Currency must be INR/);
+  });
+
+  it('defaults the currency when it is omitted', async () => {
+    const body = newSubscription({ serviceName: 'No Currency' });
+    delete body.currency;
+
+    const { status, payload } = await api('POST', '/api/subscriptions', body);
+
+    assert.equal(status, 201);
+    assert.equal(payload.data.subscription.currency, 'INR');
+  });
+
   it('rejects a calendar-invalid renewal date', async () => {
     const { status, payload } = await api(
       'POST',

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import {
+  SUPPORTED_CURRENCY,
   calculateMetrics,
   calculateMonthlyCost,
   enrichSubscription,
@@ -186,6 +187,11 @@ describe('calculateMetrics', () => {
   it('rounds currency to two decimal places', () => {
     assert.equal(roundCurrency(83.333333), 83.33);
     assert.equal(roundCurrency(1000), 1000);
+  });
+
+  it('always reports the single supported currency', () => {
+    assert.equal(calculateMetrics([], TODAY).currency, SUPPORTED_CURRENCY);
+    assert.equal(calculateMetrics([subscription()], TODAY).currency, SUPPORTED_CURRENCY);
   });
 });
 

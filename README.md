@@ -192,6 +192,7 @@ rules for instant feedback, but a request that bypasses the UI is rejected all t
 | ----------------------------------------- | --------------------------------------------------- |
 | Service name present and non-blank        | `400` "Service name is required"                     |
 | Cost is a number greater than zero        | `400` "Cost must be greater than 0"                  |
+| Currency is `INR` (defaults when omitted) | `400` "Currency must be INR. Mixed currencies are not supported." |
 | Billing cycle is `Monthly` or `Yearly`    | `400` "Billing cycle must be one of: Monthly, Yearly" |
 | Renewal date is a real calendar date      | `400` "…must be a valid date in YYYY-MM-DD format"   |
 | Status is `Active` or `Paused`             | `400` "Status must be one of: Active, Paused"        |
@@ -287,10 +288,15 @@ to active subscriptions, while section 6 applies the *warning badge* to "every
 subscription". These are implemented exactly as written: a paused subscription due in
 three days shows the badge but is not included in the count.
 
-**Currency.** The brief scopes the app to a single currency, so totals are summed
-numerically and labelled with the most common currency among active subscriptions. No
-exchange-rate conversion is applied. Supporting genuinely mixed currencies would need
-an FX rate source and per-currency subtotals.
+**Currency.** The app tracks a single currency, INR, defined once as
+`SUPPORTED_CURRENCY` in `calculationService.js`. Any other currency is rejected at
+validation, and the form shows the field as read-only.
+
+This is deliberate. Adding costs denominated in different currencies without exchange
+rates produces a meaningless total — ₹649 plus $12 is not 661 of anything. Rejecting
+mixed currencies keeps the burn rate correct instead of quietly wrong. Supporting them
+properly would need an FX rate source, a base currency, and a caching policy for stale
+rates, none of which the brief calls for.
 
 **Accessibility.** The toggle is a real `role="switch"` with `aria-checked`, form errors
 are associated via `aria-describedby`, toasts announce through an `aria-live` region,
