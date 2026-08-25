@@ -37,6 +37,11 @@
   gap: 16px;
 }
 
+.dashboard__alert-text {
+  flex: 1;
+  min-width: 0;
+}
+
 @media (max-width: 720px) {
   .dashboard {
     padding: 20px 14px 48px;
