@@ -1,0 +1,20 @@
+{
+  "name": "subscription-tracker-backend",
+  "version": "1.0.0",
+  "description": "REST API and business logic for the Subscription Tracker dashboard",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test tests/"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1"
+  }
+}
