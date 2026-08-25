@@ -1,10 +1,10 @@
-import { useState } from 'react';
-
 import MetricCard from '../components/MetricCard.jsx';
 import SubscriptionForm from '../components/SubscriptionForm.jsx';
 import SubscriptionTable from '../components/SubscriptionTable.jsx';
+import ToastStack from '../components/ToastStack.jsx';
 import { AlertIcon, CalendarIcon, WalletIcon } from '../components/icons.jsx';
 import { useSubscriptions } from '../hooks/useSubscriptions.js';
+import { useToasts } from '../hooks/useToasts.js';
 import { formatCurrency } from '../utils/format.js';
 
 import './Dashboard.css';
@@ -22,17 +22,26 @@ export default function Dashboard() {
     removeSubscription,
   } = useSubscriptions();
 
-  const [actionError, setActionError] = useState(null);
+  const { toasts, showToast, dismissToast } = useToasts();
 
   const renewalCount = metrics?.upcomingRenewalsCount ?? 0;
 
-  async function handleChangeStatus(id, nextStatus) {
-    setActionError(null);
+  async function handleAdd(input) {
+    const created = await addSubscription(input);
+    showToast(`${created.serviceName} added to your subscriptions.`);
+    return created;
+  }
 
+  async function handleChangeStatus(id, nextStatus) {
     try {
-      await changeStatus(id, nextStatus);
+      const updated = await changeStatus(id, nextStatus);
+      showToast(
+        nextStatus === 'Paused'
+          ? `${updated.serviceName} paused and removed from your monthly burn.`
+          : `${updated.serviceName} resumed and added back to your monthly burn.`,
+      );
     } catch (error) {
-      setActionError(error.message);
+      showToast(error.message, 'error');
     }
   }
 
@@ -45,12 +54,11 @@ export default function Dashboard() {
       return;
     }
 
-    setActionError(null);
-
     try {
       await removeSubscription(subscription.id);
+      showToast(`${subscription.serviceName} deleted.`);
     } catch (error) {
-      setActionError(error.message);
+      showToast(error.message, 'error');
     }
   }
 
@@ -73,13 +81,6 @@ export default function Dashboard() {
             <button type="button" className="button button--ghost" onClick={reload}>
               Retry
             </button>
-          </div>
-        )}
-
-        {actionError && (
-          <div className="alert alert--error" role="alert">
-            <AlertIcon />
-            <span className="dashboard__alert-text">{actionError}</span>
           </div>
         )}
 
@@ -110,7 +111,7 @@ export default function Dashboard() {
           />
         </section>
 
-        <SubscriptionForm onAdd={addSubscription} />
+        <SubscriptionForm onAdd={handleAdd} />
 
         <SubscriptionTable
           subscriptions={subscriptions}
@@ -120,6 +121,8 @@ export default function Dashboard() {
           onDelete={handleDelete}
         />
       </div>
+
+      <ToastStack toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }
